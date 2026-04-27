@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { Character, UserContext, UserLevel, Message } from './types';
 import SetupScreen from './components/SetupScreen';
 import ChatScreen from './components/ChatScreen';
-import BottomNav from './components/BottomNav';
+import Navigation from './components/Navigation';
 import TutorView from './components/TutorView';
 import LabView from './components/LabView';
 import StatsView from './components/StatsView';
@@ -271,59 +271,70 @@ export default function App() {
   return (
     <div 
       data-theme={context.theme}
-      className="min-h-screen font-sans selection:bg-[var(--accent-color)] selection:text-white transition-colors duration-500 overflow-hidden relative"
+      className="min-h-screen font-sans selection:bg-[var(--accent-color)] selection:text-white transition-colors duration-500 overflow-hidden bg-neutral-100 flex"
     >
-      <div className="mobile-container relative z-10 overflow-hidden">
-        {/* Background Layer */}
-        {context.backgroundImage && (
-          <div 
-            className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none opacity-40 transition-opacity duration-1000"
-            style={{ 
-              backgroundImage: `url(${context.backgroundImage})`
-            }}
-          />
-        )}
-        <AnimatePresence mode="wait">
-          {!hasSetup ? (
-            <motion.div
-              key="setup"
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.02 }}
-              transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-            >
-              <SetupScreen 
-                initialCharacter={character}
-                initialContext={context}
-                onComplete={handleSetupComplete} 
-              />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="app-main"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="h-screen flex flex-col"
-            >
-              <div className="flex-1 overflow-hidden pb-20">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeTab}
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    transition={{ duration: 0.3 }}
-                    className="h-full"
-                  >
-                    {renderContent()}
-                  </motion.div>
-                </AnimatePresence>
+      <AnimatePresence mode="wait">
+        {!hasSetup ? (
+          <motion.div
+            key="setup"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.02 }}
+            transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+            className="w-full"
+          >
+            <SetupScreen 
+              initialCharacter={character}
+              initialContext={context}
+              onComplete={handleSetupComplete} 
+            />
+          </motion.div>
+        ) : (
+          <div className="flex w-full h-screen overflow-hidden">
+            <Navigation 
+              activeTab={activeTab} 
+              setActiveTab={setActiveTab} 
+              nativeLanguage={context.nativeLanguage} 
+            />
+            
+            <main className="flex-1 overflow-hidden relative flex flex-col items-center justify-center bg-neutral-100">
+              <div className="app-container overflow-hidden flex flex-col shadow-2xl relative z-10 md:ring-1 md:ring-neutral-200 h-full w-full">
+                {/* Background Layer */}
+                {context.backgroundImage && (
+                  <div 
+                    className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none opacity-20 transition-opacity duration-1000"
+                    style={{ 
+                      backgroundImage: `url(${context.backgroundImage})`
+                    }}
+                  />
+                )}
+
+                <motion.div
+                  key="app-main"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="h-full flex flex-col relative z-10"
+                >
+                  <div className="flex-1 overflow-hidden">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={activeTab}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.3 }}
+                        className="h-full"
+                      >
+                        {renderContent()}
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                </motion.div>
               </div>
-              <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} nativeLanguage={context.nativeLanguage} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+            </main>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

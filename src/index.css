@@ -40,11 +40,16 @@
   }
 
   body {
-    @apply bg-neutral-200 text-[var(--text-color)];
+    @apply bg-neutral-100 text-[var(--text-color)] antialiased selection:bg-[var(--accent-color)] selection:text-white;
   }
 
-  .mobile-container {
-    @apply w-full max-w-[450px] mx-auto bg-[var(--bg-color)] min-h-screen relative shadow-2xl;
+  /* Responsive Main Container */
+  .app-container {
+    @apply w-full max-w-none md:max-w-[1200px] lg:max-w-[1440px] mx-auto bg-[var(--bg-color)] min-h-screen relative md:shadow-2xl md:my-0 transition-all duration-500 ease-in-out;
+  }
+
+  .content-area {
+    @apply flex-1 overflow-hidden relative flex flex-col h-full bg-[var(--bg-color)];
   }
 }
 
